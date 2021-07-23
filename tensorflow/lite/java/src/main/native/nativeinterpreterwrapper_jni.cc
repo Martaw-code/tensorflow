@@ -28,6 +28,7 @@ limitations under the License.
 #include "tensorflow/lite/core/shims/cc/interpreter.h"
 #include "tensorflow/lite/core/shims/cc/interpreter_builder.h"
 #include "tensorflow/lite/core/shims/cc/model_builder.h"
+#include "tensorflow/lite/core/shims/cc/tools/verifier_internal.h"
 #if TFLITE_DISABLE_SELECT_JAVA_APIS
 #include "tensorflow/lite/core/shims/c/experimental/acceleration/configuration/delegate_plugin.h"
 #include "tensorflow/lite/core/shims/c/experimental/acceleration/configuration/xnnpack_plugin.h"
@@ -482,8 +483,9 @@ Java_org_tensorflow_lite_NativeInterpreterWrapper_createModelWithBuffer(
       static_cast<char*>(env->GetDirectBufferAddress(model_buffer));
   jlong capacity = env->GetDirectBufferCapacity(model_buffer);
   if (!VerifyModel(buf, capacity)) {
-    ThrowException(env, tflite::jni::kIllegalArgumentException,
-                   "ByteBuffer is not a valid flatbuffer model");
+    ThrowException(
+        env, tflite::jni::kIllegalArgumentException,
+        "ByteBuffer is not a valid TensorFlow Lite model flatbuffer");
     return 0;
   }
 
