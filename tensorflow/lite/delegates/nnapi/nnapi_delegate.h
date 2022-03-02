@@ -225,6 +225,12 @@ class StatefulNnApiDelegate : public TfLiteDelegate {
       const NnApiSLDriverImplFL5* nnapi_support_library_driver,
       Options options);
 
+  // Enable loading of support library that fails if function pointers can't be
+  // loaded.
+  StatefulNnApiDelegate(
+      const NnApiSLDriverImplFL5* nnapi_support_library_driver, Options options,
+      bool checkForNullFunctionsPointers);
+
   ~StatefulNnApiDelegate() = default;
 
   // Returns the delegate options.

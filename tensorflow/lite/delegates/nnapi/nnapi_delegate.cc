@@ -6255,6 +6255,15 @@ StatefulNnApiDelegate::StatefulNnApiDelegate(
   StatefulNnApiDelegateConstructorImpl(options);
 }
 
+StatefulNnApiDelegate::StatefulNnApiDelegate(
+    const NnApiSLDriverImplFL5* nnapi_support_library_driver, Options options,
+    bool checkForNullFunctionsPointers)
+    : TfLiteDelegate(TfLiteDelegateCreate()),
+      delegate_data_(CreateCompleteNnApiFromSupportLibraryOrFail(
+          nnapi_support_library_driver)) {
+  StatefulNnApiDelegateConstructorImpl(options);
+}
+
 StatefulNnApiDelegate::StatefulNnApiDelegate(const NnApi* nnapi,
                                              Options options)
     : TfLiteDelegate(TfLiteDelegateCreate()), delegate_data_(nnapi) {

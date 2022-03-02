@@ -2131,4 +2131,7 @@ struct NnApiSLDriverImplFL5;
 std::unique_ptr<const NnApi> CreateNnApiFromSupportLibrary(
     const NnApiSLDriverImplFL5* nnapi_support_library_driver);
 
+std::unique_ptr<const NnApi> CreateCompleteNnApiFromSupportLibraryOrFail(
+    const NnApiSLDriverImplFL5* nnapi_support_library_driver);
+
 #endif  // TENSORFLOW_LITE_NNAPI_NNAPI_IMPLEMENTATION_H_

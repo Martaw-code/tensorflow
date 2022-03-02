@@ -41,6 +41,7 @@ cc_library(
     ),
     deps = [
         ":nnapi_lib",
+        "//base:logging",
     ] + if_nnapi(["//tensorflow/lite/nnapi/sl:nnapi_support_library_headers"]),
 )
 
