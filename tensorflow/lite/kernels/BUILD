@@ -207,6 +207,7 @@ cc_library(
     deps = [
         "//tensorflow/lite/tools/delegates:coreml_delegate_provider",
         "//tensorflow/lite/tools/delegates:default_execution_provider",
+        "//tensorflow/lite/tools/delegates:delegate_provider_lib",
         "//tensorflow/lite/tools/delegates:external_delegate_provider",
         "//tensorflow/lite/tools/delegates:hexagon_delegate_provider",
         "//tensorflow/lite/tools/delegates:nnapi_delegate_provider",
@@ -656,6 +657,12 @@ BUILTIN_KERNEL_SRCS = [
     "rfft2d.cc",
 ]
 
+VARIABLE_KERNEL_SRCS = [
+    "assign_variable.cc",
+    "read_variable.cc",
+    "var_handle.cc",
+]
+
 BUILTIN_KERNEL_DEPS = [
     ":cpu_backend_context",
     ":cpu_backend_gemm",
@@ -695,7 +702,7 @@ BUILTIN_KERNEL_DEPS = [
 
 cc_library(
     name = "builtin_op_kernels",
-    srcs = BUILTIN_KERNEL_SRCS,
+    srcs = [src for src in BUILTIN_KERNEL_SRCS if src not in VARIABLE_KERNEL_SRCS],
     hdrs = [
         "dequantize.h",
     ],
@@ -703,6 +710,7 @@ cc_library(
     copts = tflite_copts() + tf_opts_nortti_if_android() + EXTRA_EIGEN_COPTS,
     visibility = ["//visibility:private"],
     deps = BUILTIN_KERNEL_DEPS + [
+        ":variable_op_kernels",
         "@fft2d",
         "@ruy//ruy/profiler:instrumentation",
         "//tensorflow/core/lib/random:philox_random",
@@ -719,11 +727,8 @@ cc_library(
 
 cc_library(
     name = "variable_op_kernels",
-    srcs = [
-        "assign_variable.cc",
-        "read_variable.cc",
-        "var_handle.cc",
-    ],
+    srcs = VARIABLE_KERNEL_SRCS,
+    compatible_with = get_compatible_with_portable(),
     copts = tflite_copts(),
     deps = [
         ":kernel_util",
@@ -896,6 +901,7 @@ cc_library(
     compatible_with = get_compatible_with_portable(),
     copts = tflite_copts(),
     deps = [
+        ":builtin_op_kernels",
         "//tensorflow/lite:framework",
         "//tensorflow/lite:util",
         "//tensorflow/lite/c:common",
